@@ -1,15 +1,23 @@
 import telebot
 from flask import Flask, request
+import json
+import random
 
-# Temporally saving some data in a .txt due to laziness
-f = open('private.txt', 'rt')
-botToken = f.readline()
-testBotToken = f.readline()
-secret = f.readline()
-url = f.readline() + secret
-f.close()
+# Fetching token and server url from a json file
+private_json = open('private.json', 'rt', encoding='utf-8')
+private_dict = json.load(private_json)
+private_json.close()
+token = private_dict['test-token']
+secret = private_dict['secret']
+url = private_dict['url'] + secret
 
-token = botToken # swappable between botToken and testBotToken
+# Fetching updated responses from the responses.json
+response_json = open('responses.json', 'rt', encoding='utf-8')
+responses_dict = json.load(response_json)
+response_json.close()
+
+# Temporary solution for calling random value from json
+copypasta_responses = ['lamar','gg']
 
 bot = telebot.TeleBot(token, threaded=False)
 bot.remove_webhook()
@@ -34,9 +42,9 @@ def help(m):
 def wumbojet(m):
     bot.send_message(m.chat.id, '¿alguien dijo algo sobre el mejor jugador de solitario de centroamérica? https://youtu.be/UQRtd-ocw_k')
 
-@bot.message_handler(commands=['roast'])
+@bot.message_handler(commands=['copypasta'])
 def roast(m):
-    bot.send_message(m.chat.id, 'Nigga don’t hate me cause I’m beautiful nigga maybe if you got rid of that Yee Yee Ass hair cut you got you would get bitches on your dick, oh, better yet maybe Tanisha will call your dog ass if she ever stops fucking with that brain Surgeon or Lawyer she fucking with, ♪♪ Niiiggggaaaaaa ♪♪')
+    bot.send_message(m.chat.id, responses_dict['copypasta'][copypasta_responses[random.randint(0,1)]])
 
 # @bot.message_handler(content_types=['text'])
 # def echo(m):
